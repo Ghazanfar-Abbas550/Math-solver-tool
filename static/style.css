@@ -1,0 +1,304 @@
+:root{
+  --bg: #ffffff;
+  --sidebar-bg: #f6f7f8;
+  --panel-bg: #ffffff;
+  --text: #111;
+  --muted: #6b6b6b;
+  --user-bubble: #f2f2f2; /* light grey */
+  --bot-bubble: #000000;  /* black */
+  --accent: #111;
+  --dialog-bg: #fff;
+  --max-width: 1100px;
+
+  /* added */
+  --input-border: rgba(0,0,0,0.12);
+  --chat-gradient: linear-gradient(180deg, rgba(0,0,0,0.02), transparent);
+}
+
+body.theme-dark{
+  --bg: #0b0b0b;
+  --sidebar-bg: #101010;
+  --panel-bg: #0b0b0b;
+  --text: #efefef;
+  --muted: #a0a0a0;
+  --user-bubble: #222; /* darker user bubble */
+  --bot-bubble: #000;
+  --dialog-bg: #111;
+
+  /* added */
+  --input-border: rgba(255,255,255,0.15);
+  --chat-gradient: linear-gradient(180deg, rgba(255,255,255,0.05), transparent);
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0; font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  background:var(--bg); color:var(--text); display:flex; justify-content:center; padding:20px;
+  transition: background .25s, color .25s; /* smooth theme */
+}
+#app{
+  width:100%; max-width:var(--max-width); display:flex; border-radius:10px; overflow:hidden; box-shadow:0 6px 30px rgba(0,0,0,0.15);
+  /* Added transition for smooth sidebar toggle */
+  transition: all 0.3s ease;
+}
+
+/* Sidebar */
+.sidebar{
+  width:280px; background:var(--sidebar-bg); display:flex; flex-direction:column; justify-content:space-between;
+  border-right:1px solid rgba(0,0,0,0.06); padding:18px;
+  /* UPDATED: Added transform for smooth mobile animation */
+  transition: width .3s ease, padding .3s ease, transform 0.3s ease, background .25s;
+  flex-shrink: 0; /* Prevents sidebar from shrinking when main grows */
+}
+
+/* Sidebar Closed State (Desktop) */
+#app.sidebar-closed .sidebar {
+  width: 0;
+  padding: 0;
+  border-right: none;
+  overflow: hidden;
+}
+#app.sidebar-closed .sidebar-top h1,
+#app.sidebar-closed .chat-controls,
+#app.sidebar-closed .chats-list,
+#app.sidebar-closed .sidebar-bottom {
+  display: none;
+}
+#app.sidebar-closed .main {
+  flex: 1; /* Automatically expands main panel */
+}
+
+.brand{font-size:18px; margin:0 0 10px 0}
+.chat-controls{
+    margin-bottom:12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+#new-chat,
+#delete-all-chats{ /* TARGET BOTH BUTTONS FOR SAME STYLE */
+  display:block; width:100%; padding:10px; background:transparent;
+  border:1px dashed var(--input-border);
+  border-radius:6px; cursor:pointer; color:var(--text);
+  text-align: center;
+}
+.chats-list{margin-top:10px; overflow-y:auto; max-height:60vh} /* Changed to overflow-y:auto for specific scroll */
+.chat-item{
+  display:flex; justify-content:space-between; align-items:center; padding:8px 10px; border-radius:8px; cursor:pointer; margin-bottom:8px;
+  background:transparent; color:var(--text);
+}
+.chat-item.active{background:rgba(0,0,0,0.06)}
+.chat-item .name {
+  flex-grow: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.chat-item .actions button {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    padding: 2px 4px;
+    margin-left: 4px;
+    color: var(--text);
+}
+
+
+/* sidebar bottom */
+.sidebar-bottom{
+  display:flex; justify-content:flex-start; align-items:center; gap:10px;
+}
+.settings-btn{
+  background:transparent; border:none; font-size:20px; cursor:pointer; color:var(--text);
+}
+
+/* Sidebar Toggle Button (New) */
+.sidebar-toggle-btn{
+  background:transparent; border:none; font-size:20px; cursor:pointer; color:var(--text); margin-right:10px;
+  padding: 0;
+  display: flex; /* Ensure it is a flex item */
+}
+
+
+/* Main panel */
+.main{flex:1; background:var(--panel-bg); display:flex; flex-direction:column; transition: background .25s;}
+.main-header{
+    padding:16px 18px; border-bottom:1px solid rgba(0,0,0,0.06);
+    display: flex;
+    align-items: center;
+}
+.title{font-weight:600}
+.messages{
+  flex:1; padding:20px; overflow-y:auto; /* Changed to overflow-y:auto for main chat scroll */
+  background:var(--chat-gradient);
+  transition: background .25s;
+}
+.composer{
+  display:flex; gap:10px; padding:12px 16px; border-top:1px solid rgba(0,0,0,0.06);
+  align-items:center; background:var(--panel-bg);
+}
+#message-input{
+  flex:1;padding:12px;border-radius:8px;
+  border:1px solid var(--input-border);
+  outline:none;background:transparent;color:var(--text);
+}
+#send-btn{
+  padding:10px 16px;border-radius:8px;border:0;background:var(--accent);color:#fff;cursor:pointer;
+}
+
+/* Bubbles */
+.message-row{display:flex; margin-bottom:10px; align-items:flex-end; gap:8px}
+.message-row.user{justify-content:flex-end}
+.message-row.bot{justify-content:flex-start}
+.bubble{
+  max-width:72%; padding:10px 12px; border-radius:16px; font-size:14px; line-height:1.3;
+  word-break:break-word;
+  transition: background .25s, color .25s;
+}
+.bubble.user{background:var(--user-bubble); color:var(--text); border-bottom-right-radius:4px;}
+.bubble.bot{background:var(--bot-bubble); color:#fff; border-bottom-left-radius:4px;}
+
+/* small meta */
+.msg-meta{font-size:11px;color:var(--muted); margin-top:4px}
+
+/* Dialogs (large) */
+/* Ensure dialog elements use the themed opaque background and text color — not transparent */
+dialog{border:none;border-radius:10px;padding:0;background:var(--dialog-bg); color:var(--text)}
+.dialog-large{
+  width:740px; max-width:92%; background:var(--dialog-bg); color:var(--text);
+  box-shadow:0 18px 60px rgba(0,0,0,0.35); padding:18px;
+  transition: background .25s, color .25s;
+}
+.dialog-header{display:flex;justify-content:space-between;align-items:center}
+.dialog-body{margin-top:12px}
+.close-x{border:0;background:transparent;font-size:20px;cursor:pointer;color:var(--text)}
+.scrollable{max-height:40vh; overflow-y:auto; padding-right:8px}
+.dialog-actions{display:flex; gap:10px; margin-top:12px}
+.mode-btn{
+  padding:10px 12px;border-radius:8px;
+  border:1px solid var(--input-border);
+  cursor:pointer;color:var(--text);background:transparent;
+}
+.info-btn{
+  padding:10px 12px;border-radius:8px;
+  border:1px solid var(--input-border);
+  cursor:pointer;color:var(--text);background:transparent;
+}
+
+/* small dialogs like rename/delete */
+dialog#rename-dialog, dialog#delete-dialog, dialog#algebra-options{
+  width:420px; padding:14px; background:var(--dialog-bg); color:var(--text);
+  transition: background .25s, color .25s;
+}
+
+/* New Login/Signup Form Styling (minimal but functional) */
+.auth-container {
+    padding: 40px;
+    max-width: 400px;
+    margin: 50px auto;
+    background: var(--sidebar-bg);
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+.auth-container h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: var(--text);
+}
+.auth-container input[type="text"],
+.auth-container input[type="email"],
+.auth-container input[type="password"] {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    border: 1px solid var(--input-border);
+    border-radius: 6px;
+    box-sizing: border-box;
+    background: transparent;
+    color: var(--text);
+}
+.auth-container button {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 6px;
+    background: var(--accent);
+    color: #fff;
+    cursor: pointer;
+    font-size: 16px;
+}
+.auth-container .error-message {
+    color: #ff4444;
+    margin-bottom: 15px;
+    text-align: center;
+    font-weight: 600;
+}
+.auth-container p {
+    text-align: center;
+    margin-top: 15px;
+}
+.auth-container p a {
+    color: var(--accent);
+    text-decoration: none;
+}
+/* responsive */
+@media (max-width:900px){
+  :root{--max-width:900px}
+  .sidebar{width:220px}
+}
+@media (max-width: 600px) {
+    body {
+        padding: 0;
+    }
+    #app {
+        border-radius: 0;
+        box-shadow: none;
+        height: 100vh;
+    }
+    .sidebar {
+        width: 100%;
+        position: absolute;
+        height: 100%;
+        z-index: 10;
+        padding-top: 60px; /* Space for the header */
+        transform: translateX(-100%);
+        /* Transition is handled on the .sidebar element globally */
+    }
+    .sidebar-top {
+        padding-top: 0; /* Adjust for mobile padding */
+    }
+    #app.sidebar-closed .sidebar {
+        transform: translateX(-100%); /* HIDE sidebar when class is present */
+        width: 100%;
+    }
+    #app:not(.sidebar-closed) .sidebar {
+        transform: translateX(0); /* SHOW sidebar when class is absent */
+    }
+    #app .sidebar-toggle-btn {
+        display: block; /* Always show toggle on mobile */
+    }
+    .main-header {
+        position: fixed;
+        width: 100%;
+        top: 0;
+        background: var(--panel-bg);
+        z-index: 5;
+    }
+    .messages {
+        padding-top: 70px; /* Offset for fixed header */
+        padding-bottom: 70px; /* Offset for fixed composer */
+    }
+    .composer {
+        position: fixed;
+        width: 100%;
+        bottom: 0;
+        border-radius: 0;
+    }
+    .auth-container {
+        margin: 0;
+        padding: 20px;
+        box-shadow: none;
+        background: var(--bg);
+    }
+}

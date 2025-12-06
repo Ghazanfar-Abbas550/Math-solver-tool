@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Math Helper AI</title>
+<link rel="stylesheet" href="../static/style.css">
+</head>
+<body>
+  <div id="app" class="theme-light" data-username="{{ username if username else '' }}">
+    <aside class="sidebar">
+      <div class="sidebar-top">
+        <h1 class="brand">Math Helper</h1>
+        <div class="chat-controls">
+          <button id="new-chat" title="New chat">➕ New chat</button>
+          <button id="new-ai-chat" title="New AI chat">🤖 New AI chat</button>
+          <button id="delete-all-chats" class="delete-all-btn">🗑️ Delete All</button>
+        </div>
+        <div id="chats" class="chats-list" role="list"></div>
+      </div>
+
+      <div class="sidebar-bottom">
+        <button id="settings-open" class="settings-btn" title="Settings">⚙</button>
+        <button id="logout-btn" class="settings-btn" title="Logout">logout</button>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="main-header">
+        <button id="sidebar-toggle-btn" class="sidebar-toggle-btn">☰</button>
+        <div id="current-chat-title" class="title">Chat 1</div>
+      </header>
+
+      <section id="messages" class="messages"></section>
+
+      <footer class="composer">
+        <input id="message-input" placeholder="Ask any math related question" autocomplete="off">
+        <button id="send-btn">Send</button>
+      </footer>
+    </main>
+  </div>
+
+  <!-- Dialogs (same as previous, used by script.js) -->
+  <dialog id="settings-dialog" class="dialog-large">
+    <div class="dialog-header">
+      <h3>Settings</h3>
+      <button id="settings-close" class="close-x" data-close="settings-dialog">×</button>
+    </div>
+    <div class="dialog-body">
+      <div class="mode-row">
+        <button id="dark-btn" class="mode-btn">⚫ Dark</button>
+        <button id="light-btn" class="mode-btn">⚪ Light</button>
+      </div>
+      <div class="info-row">
+        <button id="guidelines-open" class="info-btn">Guidelines</button>
+        <button id="howto-open" class="info-btn">How to use</button>
+        <button id="archive-open" class="info-btn">Archived Chats</button>
+      </div>
+    </div>
+  </dialog>
+
+  <dialog id="guidelines-dialog" class="dialog-large">
+    <div class="dialog-header">
+      <h3>Community Guidelines</h3>
+      <button class="close-x" data-close="guidelines-dialog">×</button>
+    </div>
+    <div class="dialog-body scrollable">
+      <p>Please be respectful. This tool is for learning math. Don’t share personal info. Use integer numbers for HCF/LCM and algebra solves.</p>
+      <ul>
+        <li>Do not request harmful activity</li>
+        <li>Keep questions math-focused</li>
+      </ul>
+    </div>
+  </dialog>
+
+<dialog id="howto-dialog" class="dialog-large">
+  <div class="dialog-header">
+    <h3>How to use</h3>
+    <button class="close-x" data-close="howto-dialog">×</button>
+  </div>
+  <div class="dialog-body scrollable">
+    <p>Quick start — examples you can type into the input box:</p>
+    <ul>
+      <li><code>HCF of 12 and 18</code> — compute Highest Common Factor (GCD)</li>
+      <li><code>LCM of 4 and 6</code> — compute The Least Common Multiple</li>
+      <li><code>2x+3=7</code> — single-variable equation with step-by-step solution</li>
+      <li><code>2x+y=10, x-y=2</code> — system of two equations (two variables)</li>
+      <li>Simplify expressions: <code>3x + 5y - 7x + 2</code></li>
+      <li>Basic arithmetic is supported: <code>12 + 5</code>, <code>10/4</code></li>
+    </ul>
+    <p>Notes:</p>
+    <ul>
+      <li>Work best with integer arithmetic and basic algebra.</li>
+      <li>Put each equation on a single line and separate systems with a comma.</li>
+      <li>Use AI mode using 'New AI chat' for more advanced solving</li>
+    </ul>
+  </div>
+</dialog>
+
+  <dialog id="rename-dialog">
+    <div class="dialog-header">
+      <h3>Rename Chat</h3>
+      <button id="rename-cancel" class="close-x" data-close="rename-dialog">×</button>
+    </div>
+    <div class="dialog-body">
+      <input id="rename-input" placeholder="New chat name">
+      <div class="dialog-actions">
+        <button id="rename-confirm">Rename</button>
+      </div>
+    </div>
+  </dialog>
+
+  <dialog id="delete-dialog">
+    <div class="dialog-header">
+      <h3>Delete Chat</h3>
+      <button id="delete-cancel" class="close-x" data-close="delete-dialog">×</button>
+    </div>
+    <div class="dialog-body">
+      <p id="delete-dialog-text">Delete this chat? This action cannot be undone.</p>
+      <div class="dialog-actions">
+        <button id="delete-confirm">Delete</button>
+        <button id="delete-cancel-action">Cancel</button>
+      </div>
+    </div>
+  </dialog>
+
+  <dialog id="algebra-options">
+    <div class="dialog-header">
+      <h3>Algebra options</h3>
+      <button id="algebra-close" class="close-x" data-close="algebra-options">×</button>
+    </div>
+    <div class="dialog-body">
+      <p>Choose how you'd like to handle the equation:</p>
+      <div class="dialog-actions">
+        <button id="opt-simplify">Simplify both sides</button>
+        <button id="opt-solve">Attempt to solve</button>
+      </div>
+    </div>
+  </dialog>
+
+  <dialog id="archive-dialog" class="dialog-large">
+    <div class="dialog-header">
+      <h3>Archived Chats</h3>
+      <button id="archive-close" class="close-x" data-close="archive-dialog">×</button>
+    </div>
+    <div class="dialog-body scrollable">
+      <div id="archived-list" class="chats-list" role="list"></div>
+    </div>
+  </dialog>
+
+  <!-- Generic dialogs used by script.js -->
+  <dialog id="notify-dialog">
+    <div class="dialog-header">
+      <h3 id="notify-title">Message</h3>
+      <button class="close-x" data-close="notify-dialog">×</button>
+    </div>
+    <div class="dialog-body">
+      <div id="notify-message"></div>
+      <div class="dialog-actions" style="margin-top:12px;">
+        <button id="notify-ok">OK</button>
+      </div>
+    </div>
+  </dialog>
+
+  <dialog id="confirm-dialog">
+    <div class="dialog-header">
+      <h3>Confirm</h3>
+      <button class="close-x" data-close="confirm-dialog">×</button>
+    </div>
+    <div class="dialog-body">
+      <div class="confirm-message"></div>
+      <div class="dialog-actions" style="margin-top:12px;">
+        <button class="confirm-yes">Yes</button>
+        <button class="confirm-no">No</button>
+      </div>
+    </div>
+  </dialog>
+
+  <dialog id="prompt-dialog">
+    <div class="dialog-header">
+      <h3 id="prompt-title">Input</h3>
+      <button class="close-x" data-close="prompt-dialog">×</button>
+    </div>
+    <div class="dialog-body">
+      <input id="prompt-input" style="width:100%; padding:8px; margin-top:8px;" />
+      <div class="dialog-actions" style="margin-top:12px;">
+        <button id="prompt-ok">OK</button>
+        <button id="prompt-cancel">Cancel</button>
+      </div>
+    </div>
+  </dialog>
+
+  <dialog id="edit-message-dialog">
+    <div class="dialog-header">
+      <h3>Edit message</h3>
+      <button class="close-x" data-close="edit-message-dialog">×</button>
+    </div>
+    <div class="dialog-body">
+      <input id="edit-message-input" style="width:100%; padding:8px; margin-top:8px;" />
+      <div class="dialog-actions" style="margin-top:12px;">
+        <button id="edit-message-save">Save</button>
+        <button id="edit-message-cancel">Cancel</button>
+      </div>
+    </div>
+  </dialog>
+
+<script src="../static/script.js"></script>
+</body>
+</html>

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Sign Up - Math Helper AI</title>
+    <link rel="stylesheet" href="../static/style.css">
+</head>
+<body>
+    <div class="auth-container">
+        <h2>Create Account</h2>
+        {% if error %}
+            <p class="error-message">{{ error }}</p>
+        {% endif %}
+        <form method="POST">
+            <input type="email" name="email" placeholder="Email" required>
+            <input type="text" name="username" placeholder="Username" required>
+            <input type="password" name="password" placeholder="New Password"
+                   title="Password must be 8-16 characters, including at least one capital letter, one small letter, one number, and one special character."
+                   required>
+            <button type="submit">Sign Up</button>
+        </form>
+        <p>
+            Already have an account? <a href="{{ url_for('login') }}">Sign In</a>
+        </p>
+    </div>
+</body>
+</html>

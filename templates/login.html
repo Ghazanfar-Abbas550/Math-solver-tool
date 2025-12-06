@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Login - Math Helper AI</title>
+    <link rel="stylesheet" href="../static/style.css">
+</head>
+<body>
+    <div class="auth-container">
+        <h2>Sign In to Math Helper</h2>
+        {% if error %}
+            <p class="error-message">{{ error }}</p>
+        {% endif %}
+        <form method="POST">
+            <input type="text" name="identifier" placeholder="Username or Email" required>
+            <input type="password" name="password" placeholder="Password" required>
+            <button type="submit">Sign In</button>
+        </form>
+        <p>
+            Don't have an account? <a href="{{ url_for('signup') }}">Sign Up</a>
+        </p>
+    </div>
+</body>
+</html>
